@@ -9,14 +9,14 @@ import 'react-toastify/dist/ReactToastify.css'
 import { AppProvider } from './context/app.context'
 const queryClient = new QueryClient()
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  // <React.StrictMode>
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <AppProvider>
-        <App />
-      </AppProvider>
-      <ToastContainer />
-    </BrowserRouter>
-  </QueryClientProvider>
-  // </React.StrictMode>
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AppProvider>
+          <App />
+        </AppProvider>
+        <ToastContainer />
+      </BrowserRouter>
+    </QueryClientProvider>
+  </React.StrictMode>
 )

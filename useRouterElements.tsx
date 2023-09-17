@@ -85,7 +85,6 @@ const useRouterElements = () => {
     },
     {
       path: '/:id',
-      index: true,
       element: (
         <MainLayout>
           <ProductDetail />

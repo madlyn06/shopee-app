@@ -4,18 +4,20 @@ import { useParams } from 'react-router-dom'
 import InputNumber from 'src/components/InputNumber'
 import { getProductDetail } from 'src/apis/product.api'
 import ProductRating from '../ProductList/Product/ProductRating'
-import { formatCurrency, formatNumberToSocialStyle, rateSale } from 'src/utills/ultill'
-import { useEffect, useState } from 'react'
+import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from 'src/utills/ultill'
+import { useEffect, useRef, useState } from 'react'
 import { addToCart } from 'src/apis/purchase.api'
 import QuantityController from 'src/components/QuantityController/QuantityController'
 export default function ProductDetail() {
   const queryClient = useQueryClient()
+  const imageRef = useRef<HTMLImageElement>(null)
   const [activeImage, setActiveImage] = useState('')
-
+  const [currentIndexImage, setCurrentIndexImage] = useState([0, 5])
   const { id } = useParams()
+  const _id = getIdFromNameId(id as string)
   const { data: productDetailData } = useQuery({
-    queryKey: ['product', id],
-    queryFn: () => getProductDetail(id as string)
+    queryKey: ['product', _id],
+    queryFn: () => getProductDetail(_id)
   })
   const product = productDetailData?.data.data
   useEffect(() => {
@@ -36,21 +38,56 @@ export default function ProductDetail() {
     })
   }
   if (!product) return null
+  const imageSlide = product?.images.slice(...currentIndexImage)
+  const next = () => {
+    if (currentIndexImage[1] < product.images.length) {
+      setCurrentIndexImage([currentIndexImage[0] + 1, currentIndexImage[1] + 1])
+    }
+  }
+  const prev = () => {
+    if (currentIndexImage[0] >= 1) {
+      setCurrentIndexImage([currentIndexImage[0] - 1, currentIndexImage[1] - 1])
+    }
+  }
+  const handleZoom = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const img = imageRef.current as HTMLImageElement
+    const { height, width } = event.currentTarget.getBoundingClientRect()
+    const { naturalHeight, naturalWidth } = img
+    const { offsetX, offsetY } = event.nativeEvent
+    const top = offsetY * (1 - naturalHeight / height)
+    const left = offsetX * (1 - naturalWidth / width)
+    img.style.width = naturalWidth + 'px'
+    img.style.height = naturalHeight + 'px'
+    img.style.maxWidth = 'unset'
+    img.style.top = top + 'px'
+    img.style.left = left + 'px'
+  }
+  const handleZoomLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    imageRef.current?.removeAttribute('style')
+  }
   return (
     <div className='bg-gray-200 py-6'>
       <div className='bg-white p-4 shadow'>
         <div className='mx-auto max-w-7xl px-4'>
           <div className='grid grid-cols-12 gap-9'>
             <div className='col-span-5'>
-              <div className='relative w-full pt-[100%] shadow'>
+              <div
+                className='relative w-full cursor-zoom-in overflow-hidden pt-[100%] shadow'
+                onMouseMove={handleZoom}
+                onMouseLeave={handleZoomLeave}
+              >
                 <img
                   src={activeImage}
                   alt={product.name}
-                  className='absolute top-0 left-0 h-full w-full bg-white object-cover'
+                  className='pointer-events-none absolute top-0 left-0 h-full w-full bg-white object-cover'
+                  ref={imageRef}
                 />
               </div>
               <div className='relative mt-4 grid grid-cols-5 gap-1'>
-                <button className='absolute left-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white'>
+                <button
+                  onClick={prev}
+                  className='absolute left-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white'
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -62,7 +99,7 @@ export default function ProductDetail() {
                     <path strokeLinecap='round' strokeLinejoin='round' d='M15.75 19.5L8.25 12l7.5-7.5' />
                   </svg>
                 </button>
-                {product.images.slice(0, 5).map((img: string, index: number) => {
+                {imageSlide.map((img: string, index: number) => {
                   const isActive = img === activeImage
                   return (
                     <div className='relative w-full pt-[100%]' key={img} onMouseEnter={() => setActiveImage(img)}>
@@ -75,7 +112,10 @@ export default function ProductDetail() {
                     </div>
                   )
                 })}
-                <button className='absolute right-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white'>
+                <button
+                  onClick={next}
+                  className='absolute right-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white'
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'

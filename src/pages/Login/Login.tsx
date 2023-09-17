@@ -10,10 +10,11 @@ import { useContext } from 'react'
 import { AppContext } from 'src/context/app.context'
 import { useNavigate } from 'react-router-dom'
 import Button from 'src/components/Button/Button'
+import { saveProfileToLS } from 'src/utills/auth'
 type FormLogin = Pick<Schema, 'email' | 'password'>
 const registerSchema = schema.pick(['email', 'password'])
 const Login = () => {
-  const { setIsAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, setProfile, profile } = useContext(AppContext)
   const navigate = useNavigate()
   const {
     handleSubmit,
@@ -36,6 +37,8 @@ const Login = () => {
       },
       onSuccess: (data) => {
         setIsAuthenticated(true)
+        setProfile(data.data.data.user)
+        console.log(profile)
         navigate('/')
       }
     })
