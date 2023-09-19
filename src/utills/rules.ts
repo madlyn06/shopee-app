@@ -1,50 +1,43 @@
 import * as yup from 'yup'
-
-export const schema = yup
-  .object({
-    email: yup
-      .string()
-      .required('Bắt buộc nhập email')
-      .email('Sai định dạng email')
-      .max(160, 'Độ dài từ 5-160 ký tự')
-      .min(5, 'Độ dài từ 5-160 ký tự'),
-    password: yup
-      .string()
-      .required('Bắt buộc nhập password')
-      .max(160, 'Độ dài từ 5-160 ký tự')
-      .min(6, 'Độ dài từ 6-160 ký tự'),
-    confirm_password: yup
-      .string()
-      .required('Bắt buộc nhập password')
-      .max(160, 'Độ dài từ 5-160 ký tự')
-      .min(6, 'Độ dài từ 6-160 ký tự')
-      .oneOf([yup.ref('password')], 'Không khớp password')
-      .oneOf([yup.ref('password')], 'Nhập lại password không khớp'),
-    price_min: yup.string().test({
-      name: 'price-is-not-allowed',
-      message: 'Giá không phù hợp',
-      test: function (value) {
-        const { price_max } = this.parent as { price_min: string; price_max: string }
-        if (price_max !== '' && value !== '') {
-          return Number(price_max) >= Number(value)
-        }
-        return price_max !== '' || value !== ''
-      }
-    }),
-    price_max: yup.string().test({
-      name: 'price-is-not-allowed',
-      message: 'Giá không phù hợp',
-      test: function (value) {
-        const { price_min } = this.parent as { price_min: string; price_max: string }
-        if (price_min !== '' && value !== '') {
-          return Number(price_min) <= Number(value)
-        }
-        return price_min !== '' || value !== ''
-      }
-    }),
-    name: yup.string().trim().required('Bắt buộc nhập tên')
+import { AnyObject } from 'yup/lib/types'
+function testPriceMinMax(this: yup.TestContext<AnyObject>) {
+  const { price_max, price_min } = this.parent as { price_min: string; price_max: string }
+  if (price_min !== '' && price_max !== '') {
+    return Number(price_max) >= Number(price_min)
+  }
+  return price_min !== '' || price_max !== ''
+}
+export const schema = yup.object({
+  email: yup
+    .string()
+    .required('Email là bắt buộc')
+    .email('Email không đúng định dạng')
+    .min(5, 'Độ dài từ 5 - 160 ký tự')
+    .max(160, 'Độ dài từ 5 - 160 ký tự'),
+  password: yup
+    .string()
+    .required('Password là bắt buộc')
+    .min(6, 'Độ dài từ 6 - 160 ký tự')
+    .max(160, 'Độ dài từ 6 - 160 ký tự'),
+  confirm_password: yup
+    .string()
+    .required('Nhập lại password là bắt buộc')
+    .min(6, 'Độ dài từ 6 - 160 ký tự')
+    .max(160, 'Độ dài từ 6 - 160 ký tự')
+    .oneOf([yup.ref('password')], 'Nhập lại password không khớp'),
+  price_min: yup.string().test({
+    name: 'price-not-allowed',
+    message: 'Giá không phù hợp',
+    test: testPriceMinMax
+  }),
+  price_max: yup.string().test({
+    name: 'price-not-allowed',
+    message: 'Giá không phù hợp',
+    test: testPriceMinMax
   })
-  .required()
+})
+
+export type Schema = yup.InferType<typeof schema>
 
 export const userSchema = yup.object({
   name: yup.string().trim().required('Bắt buộc nhập tên').max(160, 'Độ dài từ 5-160 ký tự'),
@@ -57,4 +50,3 @@ export const userSchema = yup.object({
   confirm_password: schema.fields['confirm_password']
 })
 export type UserSchema = yup.InferType<typeof userSchema>
-export type Schema = yup.InferType<typeof schema>

@@ -9,7 +9,8 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Schema, schema } from 'src/utills/rules'
 import { NoUndefinedField } from 'src/utills/ultill'
 
-type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>
+type FormData = Pick<Schema, 'price_max' | 'price_min'>
+
 const priceSchema = schema.pick(['price_min', 'price_max'])
 export default function ASideFilter({
   category_data,
@@ -21,8 +22,8 @@ export default function ASideFilter({
   const {
     control,
     handleSubmit,
-    formState: { errors },
-    trigger
+    trigger,
+    formState: { errors }
   } = useForm<FormData>({
     defaultValues: {
       price_min: '',
@@ -30,15 +31,14 @@ export default function ASideFilter({
     },
     resolver: yupResolver(priceSchema)
   })
-  // console.log('re-render')
   const navigate = useNavigate()
   const onSubmit = handleSubmit((data) => {
     navigate({
       pathname: '/',
       search: createSearchParams({
         ...queryConfig,
-        price_min: data.price_min,
-        price_max: data.price_max
+        price_min: data.price_min || '',
+        price_max: data.price_max || ''
       }).toString()
     })
   })
@@ -71,7 +71,7 @@ export default function ASideFilter({
         <p className='font-bold'>Tất cả danh mục</p>
       </Link>
       <div className='mt-4 h-[1px] bg-gray-300'></div>
-      <ul className='mt-4 ml-4 flex flex-col gap-3'>
+      <ul className='ml-4 mt-4 flex flex-col gap-3'>
         {category_data.map((category) => {
           return (
             <li key={category._id}>
