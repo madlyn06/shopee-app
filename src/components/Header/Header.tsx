@@ -16,6 +16,7 @@ const schemaName = schema.pick(['name'])
 const Header = () => {
   const navigate = useNavigate()
   const queryConfig = useQueryConfig()
+  const { isAuthenticated, setIsAuthenticated, setProfile, profile } = useContext(AppContext)
   const { handleSubmit, register } = useForm<FormData>({
     defaultValues: {
       name: ''
@@ -35,9 +36,9 @@ const Header = () => {
     queryKey: ['purchases', { status: -1 }],
     queryFn: () => {
       return getPurchases({ status: -1 })
-    }
+    },
+    enabled: isAuthenticated
   })
-  const { isAuthenticated, setIsAuthenticated, setProfile, profile } = useContext(AppContext)
   const logoutMutation = useMutation(logoutApi, {
     onSuccess: () => {
       setIsAuthenticated(false)
