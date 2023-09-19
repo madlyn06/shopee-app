@@ -1,19 +1,15 @@
-import React from 'react'
 import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import Button from 'src/components/Button/Button'
-import Input from 'src/components/Input'
 import { CategoryType } from 'src/types/category.type'
-import classNames from 'classNames'
+import classNames from 'classnames'
 import { QueryConfig } from '../ProductList'
 import { useForm, Controller } from 'react-hook-form'
 import InputNumber from 'src/components/InputNumber'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Schema, schema } from 'src/utills/rules'
+import { NoUndefinedField } from 'src/utills/ultill'
 
-type FormPrice = {
-  price_min: string
-  price_max: string
-}
+type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>
 const priceSchema = schema.pick(['price_min', 'price_max'])
 export default function ASideFilter({
   category_data,
@@ -27,7 +23,7 @@ export default function ASideFilter({
     handleSubmit,
     formState: { errors },
     trigger
-  } = useForm<FormPrice>({
+  } = useForm<FormData>({
     defaultValues: {
       price_min: '',
       price_max: ''

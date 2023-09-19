@@ -1,5 +1,5 @@
 import { QueryConfig } from '../ProductList'
-import classNames from 'classNames'
+import classNames from 'classnames'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import { omit } from 'lodash'
 import { QueryParamsConfig } from 'src/types/product.type'

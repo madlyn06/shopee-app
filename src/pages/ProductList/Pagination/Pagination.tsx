@@ -1,4 +1,4 @@
-import classNames from 'classNames'
+import classNames from 'classnames'
 import { useState } from 'react'
 import { createSearchParams, Link } from 'react-router-dom'
 import { QueryConfig } from '../ProductList'

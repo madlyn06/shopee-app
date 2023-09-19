@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import axios, { AxiosError, HttpStatusCode } from 'axios'
 
 const isAxiosError = (error: unknown): error is AxiosError => {
@@ -33,4 +34,8 @@ export const generateNameId = ({ name, id }: { name: string; id: string }) => {
 export const getIdFromNameId = (nameId: string) => {
   const arr = nameId.split('-i-')
   return arr[arr.length - 1]
+}
+
+export type NoUndefinedField<T> = {
+  [P in keyof T]-?: NoUndefinedField<NonNullable<T[P]>>
 }
