@@ -27,7 +27,7 @@ const Header = () => {
       pathname: '/',
       search: createSearchParams({
         ...queryConfig,
-        name: data.name
+        name: data.name || ''
       }).toString()
     })
   })
@@ -48,13 +48,13 @@ const Header = () => {
     logoutMutation.mutate()
   }
   return (
-    <div className='bg-[linear-gradient(-180deg,#f53d2d,#f63)] pt-2 pb-5 text-white'>
+    <div className='bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-2 text-white'>
       <div className='mx-auto max-w-[1200px] px-4'>
         <div className='flex justify-end'>
           <Popover
             renderPopover={
               <div className='rounded-sm bg-white px-4 py-3 text-black'>
-                <div className='mr-20 mb-2'>Tiếng việt</div>
+                <div className='mb-2 mr-20'>Tiếng việt</div>
                 <div>Tiếng anh</div>
               </div>
             }
@@ -91,19 +91,19 @@ const Header = () => {
                 <div className='relative rounded-sm border border-gray-200 bg-white shadow-md'>
                   <Link
                     to='/user/profile'
-                    className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-cyan-500'
+                    className='block w-full bg-white px-4 py-3 text-left hover:bg-slate-100 hover:text-cyan-500'
                   >
                     Tài khoản của tôi
                   </Link>
                   <Link
                     to='/'
-                    className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-cyan-500'
+                    className='block w-full bg-white px-4 py-3 text-left hover:bg-slate-100 hover:text-cyan-500'
                   >
                     Đơn mua
                   </Link>
                   <button
                     onClick={() => handleLogout()}
-                    className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-cyan-500'
+                    className='block w-full bg-white px-4 py-3 text-left hover:bg-slate-100 hover:text-cyan-500'
                   >
                     Đăng xuất
                   </button>
@@ -150,7 +150,7 @@ const Header = () => {
                 type='text'
                 className='flex-grow border-transparent px-2 py-2   text-sm text-black outline-none'
               />
-              <button className=' rounded-sm bg-orange py-2 px-6 text-white'>
+              <button className=' rounded-sm bg-orange px-6 py-2 text-white'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'

@@ -7,7 +7,7 @@ function testPriceMinMax(this: yup.TestContext<AnyObject>) {
   }
   return price_min !== '' || price_max !== ''
 }
-export const schema = yup.object({
+export const schema = yup.object({name: yup.string().trim().required('Tên sản phẩm là bắt buộc'),
   email: yup
     .string()
     .required('Email là bắt buộc')
