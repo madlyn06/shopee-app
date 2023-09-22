@@ -127,14 +127,14 @@ export default function ASideFilter({
             render={({ field }) => {
               return (
                 <InputNumber
-                  value={field.value}
+                  // value={field.value}
                   type='text'
                   placeholder='Từ'
                   classNameInput='outline-none w-full p-2 border border-gray-400'
-                  onChange={(e) => {
-                    field.onChange(e)
-                    trigger('price_max')
-                  }}
+                  // onChange={(e) => {
+                  //   field.onChange(e)
+                  //   trigger('price_max')
+                  // }}
                 />
               )
             }}
@@ -147,13 +147,13 @@ export default function ASideFilter({
               return (
                 <InputNumber
                   type='text'
-                  value={field.value}
+                  // value={field.value}
                   placeholder='Đến'
                   classNameInput='outline-none w-full p-2 border border-gray-400'
-                  onChange={(e) => {
-                    field.onChange(e)
-                    trigger('price_min')
-                  }}
+                  // onChange={(e) => {
+                  //   field.onChange(e)
+                  //   trigger('price_min')
+                  // }}
                 />
               )
             }}

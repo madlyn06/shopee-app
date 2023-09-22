@@ -11,6 +11,7 @@ import ProductDetail from 'src/pages/ProductDetail'
 import Cart from 'src/pages/Cart'
 import UserLayout from 'src/pages/User/layouts/UserLayout'
 import ChangePassword from 'src/pages/User/ChangePassword'
+import NotFound from 'src/pages/NotFound/NotFound'
 const useRouterElements = () => {
   const { isAuthenticated } = useContext(AppContext)
   function ProtectedRoute() {
@@ -22,6 +23,7 @@ const useRouterElements = () => {
   const elements = useRoutes([
     {
       path: '',
+      index: true,
       element: (
         <MainLayout>
           <ProductList />
@@ -88,6 +90,14 @@ const useRouterElements = () => {
       element: (
         <MainLayout>
           <ProductDetail />
+        </MainLayout>
+      )
+    },
+    {
+      path: '*',
+      element: (
+        <MainLayout>
+          <NotFound />
         </MainLayout>
       )
     }

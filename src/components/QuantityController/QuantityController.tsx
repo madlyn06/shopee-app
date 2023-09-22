@@ -1,14 +1,60 @@
-import React from 'react'
+import { useState } from 'react'
 import InputNumber from '../InputNumber'
-interface Props {
-  max: number
-  value?: number
+import { InputNumberProps } from '../InputNumber/InputNumber'
+
+interface Props extends InputNumberProps {
+  max?: number
+  onIncrease?: (value: number) => void
+  onDecrease?: (value: number) => void
+  onType?: (value: number) => void
   classNameWrapper?: string
 }
-export default function QuantityController({ max, value, classNameWrapper = 'ml-10 flex items-center' }: Props) {
+export default function QuantityController({
+  max,
+  onIncrease,
+  onDecrease,
+  onType,
+  classNameWrapper = 'ml-10',
+  value,
+  ...rest
+}: Props) {
+  const [localValue, setLocalValue] = useState<number>(Number(value || 0))
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let _value = Number(event.target.value)
+    if (max !== undefined && _value > max) {
+      _value = max
+    } else if (_value < 1) {
+      _value = 1
+    }
+    onType && onType(_value)
+    setLocalValue(_value)
+  }
+
+  const increase = () => {
+    let _value = Number(value || localValue) + 1
+    if (max !== undefined && _value > max) {
+      _value = max
+    }
+    onIncrease && onIncrease(_value)
+    setLocalValue(_value)
+  }
+
+  const decrease = () => {
+    let _value = Number(value || localValue) - 1
+    if (_value < 1) {
+      _value = 1
+    }
+    onDecrease && onDecrease(_value)
+    setLocalValue(_value)
+  }
+
   return (
-    <div className={classNameWrapper}>
-      <button className='flex h-8 w-8 items-center justify-center rounded-l-sm border border-gray-300 text-gray-600'>
+    <div className={'flex items-center ' + classNameWrapper}>
+      <button
+        className='flex h-8 w-8 items-center justify-center rounded-l-sm border border-gray-300 text-gray-600'
+        onClick={decrease}
+      >
         <svg
           xmlns='http://www.w3.org/2000/svg'
           fill='none'
@@ -21,11 +67,17 @@ export default function QuantityController({ max, value, classNameWrapper = 'ml-
         </svg>
       </button>
       <InputNumber
-        value={1}
         className=''
+        classNameError='hidden'
         classNameInput='h-8 w-14 border-t border-b border-gray-300 p-1 text-center outline-none'
+        onChange={handleChange}
+        value={value || localValue}
+        {...rest}
       />
-      <button className='flex h-8 w-8 items-center justify-center rounded-r-sm border border-gray-300 text-gray-600'>
+      <button
+        className='flex h-8 w-8 items-center justify-center rounded-r-sm border border-gray-300 text-gray-600'
+        onClick={increase}
+      >
         <svg
           xmlns='http://www.w3.org/2000/svg'
           fill='none'
